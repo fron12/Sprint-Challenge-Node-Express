@@ -63,7 +63,14 @@ router.put('/:id', (req, res) => {
 
     actionModel
         .update(id, body)
-        .then(action => res.status(200).json(action))
+        .then(action => {
+            if(action){
+                res.status(200).json(action)
+            }
+            else{
+                res.status(404).json({ errorMsg: 'Could not find action with that id.' })
+            }
+        })
         .catch(err => res.status(500).json({ errorMsg: 'Could not edit the action.' }))
 })
 
