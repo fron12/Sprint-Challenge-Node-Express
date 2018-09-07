@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
     const { project_id, description, notes, completed } = req.body;
     const body = { project_id, description, notes, completed };
 
-    if(!description || !notes) {
+    if(!project_id || !description || !notes) {
         res.status(400).json({ errorMsg: 'Actions require a project_id, description, and notes.'})
     }
     actionModel
@@ -54,6 +54,17 @@ router.delete('/:id', (req, res) => {
             }
         })
         .catch(err => res.status(500).json({ errorMsg: 'Could not delete action.' }))
+})
+
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const { project_id, description, notes, completed } = req.body;
+    const body = { project_id, description, notes, completed };
+
+    actionModel
+        .update(id, body)
+        .then(action => res.status(200).json(action))
+        .catch(err => res.status(500).json({ errorMsg: 'Could not edit the action.' }))
 })
 
 module.exports = router;
