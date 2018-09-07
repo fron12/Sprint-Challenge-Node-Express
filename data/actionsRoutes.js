@@ -25,4 +25,35 @@ router.get('/:id', (req, res) => {
         .catch(err => res.status(500).json({ errorMsg: 'Could not retrieve action.' }))
 })
 
+router.post('/', (req, res) => {
+    const { project_id, description, notes, completed } = req.body;
+    const body = { project_id, description, notes, completed };
+
+    if(!description || !notes) {
+        res.status(400).json({ errorMsg: 'Actions require a project_id, description, and notes.'})
+    }
+    actionModel
+        .insert(body)
+        .then(action => {
+            res.status(200).json(action);
+        })
+        .catch(err => res.status(500).json({ errorMsg: 'Could not add action.' }))
+})
+
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+
+    actionModel
+        .remove(id)
+        .then(action => {
+            if(action) {
+                res.status(204).end();
+            }
+            else{
+                res.status(404).json({ errorMsg: `Could not find an action with the id:${id}` })
+            }
+        })
+        .catch(err => res.status(500).json({ errorMsg: 'Could not delete action.' }))
+})
+
 module.exports = router;
